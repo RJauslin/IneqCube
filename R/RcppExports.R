@@ -24,7 +24,7 @@
 #' @examples
 #'
 #' @export
-timesTwo <- function(x) {
-    .Call('_IneqCube_timesTwo', PACKAGE = 'IneqCube', x)
+flightphase_arma <- function(X, pik, EPS = 0.0000001) {
+    .Call(`_IneqCube_flightphase_arma`, X, pik, EPS)
 }
 

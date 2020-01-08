@@ -9,6 +9,9 @@ fast.flight.cube.ineq(X, pik, B, r, deepness = 1, EPS = 1e-06)
 \arguments{
 \item{EPS}{}
 }
+\value{
+
+}
 \description{
 Title
 }

@@ -6,20 +6,22 @@
 
 using namespace Rcpp;
 
-// timesTwo
-Rcpp::NumericVector timesTwo(Rcpp::NumericVector x);
-RcppExport SEXP _IneqCube_timesTwo(SEXP xSEXP) {
+// flightphase_arma
+arma::vec flightphase_arma(arma::mat X, arma::vec pik, double EPS);
+RcppExport SEXP _IneqCube_flightphase_arma(SEXP XSEXP, SEXP pikSEXP, SEXP EPSSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(timesTwo(x));
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type pik(pikSEXP);
+    Rcpp::traits::input_parameter< double >::type EPS(EPSSEXP);
+    rcpp_result_gen = Rcpp::wrap(flightphase_arma(X, pik, EPS));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_IneqCube_timesTwo", (DL_FUNC) &_IneqCube_timesTwo, 1},
+    {"_IneqCube_flightphase_arma", (DL_FUNC) &_IneqCube_flightphase_arma, 3},
     {NULL, NULL, 0}
 };
 

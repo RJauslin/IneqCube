@@ -3,3 +3,6 @@
 export(fast.flight.cube)
 export(fast.flight.cube.ineq)
 export(flight_cube)
+export(flightphase_arma)
+importFrom(Rcpp,sourceCpp)
+useDynLib(IneqCube, .registration = TRUE)

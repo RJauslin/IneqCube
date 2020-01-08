@@ -8,12 +8,29 @@
 #' @export
 #'
 #' @examples
+#' N=100
+#' n=30
+#' p=5
+#'
+#' z=runif(N)
+#' pik=inclusionprobabilities(z,n)
+#' X=cbind(pik,matrix(rnorm(N*p),c(N,p)))
+#' A=X/pik
+#' flight_cube(X,pik)
+#'
 flight_cube<-function(X,pik,EPS=0.0000001)
 {
   A=as.matrix(X/pik)
   if(nrow(A)==0) A=matrix(0,c(length(pik),1))
   TEST=(EPS<pik) & (pik<1-EPS)
-  if(sum(TEST)==0) a=0 else {pikR=pik[TEST];AR=A[TEST,];NN=Null(matrix(AR,c(length(AR)/ncol(A),ncol(A))));a=ncol(NN)}
+  if(sum(TEST)==0){
+    a=0
+  }else{
+    pikR=pik[TEST]
+    AR=A[TEST,]
+    NN=MASS::Null(matrix(AR,c(length(AR)/ncol(A),ncol(A))))
+    a=ncol(NN)
+  }
   while(a>0.5)
   {
     u=NN[,1]
@@ -21,7 +38,14 @@ flight_cube<-function(X,pik,EPS=0.0000001)
     l2=min(pmax((pikR-1)/u,pikR/u))
     pik[TEST] = if (runif(1)<l2/(l1+l2)) pikR+l1*u else pikR-l2*u
     TEST=(EPS<pik) & (pik<1-EPS)
-    if(sum(TEST)==0) a=0 else {pikR=pik[TEST];AR=A[TEST,];NN=Null(matrix(AR,c(length(AR)/ncol(A),ncol(A))));a=ncol(NN)}
+    if(sum(TEST)==0){
+      a=0
+    }else{
+      pikR=pik[TEST]
+      AR=A[TEST,]
+      NN=MASS::Null(matrix(AR,c(length(AR)/ncol(A),ncol(A))))
+      a=ncol(NN)
+    }
   }
   pik
 }
