@@ -39,63 +39,63 @@ arma::vec flightphase_arma(arma::mat X,arma::vec pik,double EPS=0.0000001){
 
   arma::mat B = A.rows(i);
 
-  // B = B.t();
+  B = B.t();
 
 
- arma::mat NN = arma::null(B.t());
- arma::vec u;
- int ncolNN = NN.n_cols;
+ // arma::mat NN = arma::null(B.t());
+ // arma::vec u;
+ // int ncolNN = NN.n_cols;
 
- while(ncolNN >= 1){
+ // while(ncolNN >= 1){
   // std::cout << ncolNN << std::endl;
- // while(i.size() >= J+1){
+ while(i.size() >= J+1){
 
-   // pik(i) = onestepflightphase_arma(B,pik(i));
-   // i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
-   // B = A.rows(i);
-   // B = B.t();
+   pik(i) = onestepflightphase_arma(B,pik(i));
+   i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
+   B = A.rows(i);
+   B = B.t();
 
 
-    // find u in kern of B
-     u = NN.col(0);
-
-    // update pikR
-    double l1 = 1e+200;
-    double l2 = 1e+200;
-    double l = 1e-9;
-    for(unsigned int k = 0; k < i.size(); k++){
-      if(u[k]> 0){
-        l1 = std::min(l1,(1.0-pik[i[k]])/u[k]);
-        l2 = std::min(l2,pik[i[k]]/u[k]);
-      }
-      if(u[k]< 0){
-        l1 = std::min(l1,-pik[i[k]]/u[k]);
-        l2 = std::min(l2,(pik[i[k]]-1.0)/u[k]);
-      }
-    }
-    if(Rcpp::runif(1)[0]<l2/(l1+l2)){
-      l = l1;
-    }else{
-      l = -l2;
-    }
-
-    for(unsigned int k = 0; k < i.size(); k++){
-      pik[i[k]] = pik[i[k]] + l*u[k];
-      if(pik[i[k]] < EPS){
-        pik[i[k]] = 0;
-      }
-      if(pik[i[k]] > (1-EPS)){
-        pik[i[k]] = 1;
-      }
-    }
-    // std::cout << i << std::endl;
-
-    i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
-    // std::cout << i << std::endl;
-    J = std::min(i.size(),X.n_cols);
-    arma::mat B = A.rows(i);
-    arma::mat NN = arma::null(B.t());
-    ncolNN = NN.n_cols;
+  //   // find u in kern of B
+  //    u = NN.col(0);
+  //
+  //   // update pikR
+  //   double l1 = 1e+200;
+  //   double l2 = 1e+200;
+  //   double l = 1e-9;
+  //   for(unsigned int k = 0; k < i.size(); k++){
+  //     if(u[k]> 0){
+  //       l1 = std::min(l1,(1.0-pik[i[k]])/u[k]);
+  //       l2 = std::min(l2,pik[i[k]]/u[k]);
+  //     }
+  //     if(u[k]< 0){
+  //       l1 = std::min(l1,-pik[i[k]]/u[k]);
+  //       l2 = std::min(l2,(pik[i[k]]-1.0)/u[k]);
+  //     }
+  //   }
+  //   if(Rcpp::runif(1)[0]<l2/(l1+l2)){
+  //     l = l1;
+  //   }else{
+  //     l = -l2;
+  //   }
+  //
+  //   for(unsigned int k = 0; k < i.size(); k++){
+  //     pik[i[k]] = pik[i[k]] + l*u[k];
+  //     if(pik[i[k]] < EPS){
+  //       pik[i[k]] = 0;
+  //     }
+  //     if(pik[i[k]] > (1-EPS)){
+  //       pik[i[k]] = 1;
+  //     }
+  //   }
+  //   // std::cout << i << std::endl;
+  //
+  //   i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
+  //   // std::cout << i << std::endl;
+  //   J = std::min(i.size(),X.n_cols);
+  //   arma::mat B = A.rows(i);
+  //   arma::mat NN = arma::null(B.t());
+  //   ncolNN = NN.n_cols;
   }
   return(pik);
 }
