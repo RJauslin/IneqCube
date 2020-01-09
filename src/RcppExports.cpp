@@ -6,6 +6,28 @@
 
 using namespace Rcpp;
 
+// rrefBal
+void rrefBal(NumericMatrix& M);
+RcppExport SEXP _IneqCube_rrefBal(SEXP MSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type M(MSEXP);
+    rrefBal(M);
+    return R_NilValue;
+END_RCPP
+}
+// onestepfastflightcube
+NumericVector onestepfastflightcube(NumericVector prob, NumericMatrix Bm);
+RcppExport SEXP _IneqCube_onestepfastflightcube(SEXP probSEXP, SEXP BmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Bm(BmSEXP);
+    rcpp_result_gen = Rcpp::wrap(onestepfastflightcube(prob, Bm));
+    return rcpp_result_gen;
+END_RCPP
+}
 // flightphase
 NumericVector flightphase(NumericVector prob, NumericMatrix Xbal);
 RcppExport SEXP _IneqCube_flightphase(SEXP probSEXP, SEXP XbalSEXP) {
@@ -56,6 +78,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_IneqCube_rrefBal", (DL_FUNC) &_IneqCube_rrefBal, 1},
+    {"_IneqCube_onestepfastflightcube", (DL_FUNC) &_IneqCube_onestepfastflightcube, 2},
     {"_IneqCube_flightphase", (DL_FUNC) &_IneqCube_flightphase, 2},
     {"_IneqCube_flightphase_arma", (DL_FUNC) &_IneqCube_flightphase_arma, 3},
     {"_IneqCube_onestepflightphase_arma", (DL_FUNC) &_IneqCube_onestepflightphase_arma, 3},

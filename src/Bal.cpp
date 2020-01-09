@@ -10,7 +10,32 @@ using namespace Rcpp;
 // "import" print for error checking
 Function print("print");
 
-// reduced row echelon form
+
+// [[Rcpp::depends(RcppArmadillo)]]
+//' @title title
+//'
+//' @description
+//' description
+//'
+//'
+//' @param x x
+//'
+//' @details
+//'
+//' details
+//'
+//' @return a vector
+//'
+//'
+//' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
+//'
+//' @seealso
+//' func
+//'
+//' @examples
+//'
+//' @export
+// [[Rcpp::export]]
 void rrefBal(NumericMatrix& M){
   int lead = 0;
   int rowCount = M.nrow();
@@ -59,7 +84,31 @@ void rrefBal(NumericMatrix& M){
 }
 
 
-// one step fast flight cube
+// [[Rcpp::depends(RcppArmadillo)]]
+//' @title title
+//'
+//' @description
+//' description
+//'
+//'
+//' @param x x
+//'
+//' @details
+//'
+//' details
+//'
+//' @return a vector
+//'
+//'
+//' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
+//'
+//' @seealso
+//' func
+//'
+//' @examples
+//'
+//' @export
+// [[Rcpp::export]]
 NumericVector onestepfastflightcube(NumericVector prob, NumericMatrix Bm){
   int ncol = Bm.ncol();
   int nrow = Bm.nrow();
@@ -134,6 +183,30 @@ NumericVector onestepfastflightcube(NumericVector prob, NumericMatrix Bm){
 }
 
 
+// [[Rcpp::depends(RcppArmadillo)]]
+//' @title title
+//'
+//' @description
+//' description
+//'
+//'
+//' @param x x
+//'
+//' @details
+//'
+//' details
+//'
+//' @return a vector
+//'
+//'
+//' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
+//'
+//' @seealso
+//' func
+//'
+//' @examples
+//'
+//' @export
 // [[Rcpp::export]]
 NumericVector flightphase(NumericVector prob, NumericMatrix Xbal){
   int N = prob.size();
