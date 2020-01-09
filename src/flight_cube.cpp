@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "onestepflightphase_arma.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title title
@@ -33,18 +34,28 @@ arma::vec flightphase_arma(arma::mat X,arma::vec pik,double EPS=0.0000001){
 
 
   // arma::uvec i arma::regspace<arma::uvec>(0,  1,  J); // J+1 first units
-  // unsigned int counter = J;
   arma::uvec i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first"); // find index of B
   // std::cout << i << std::endl;
 
   arma::mat B = A.rows(i);
-  arma::mat NN = arma::null(B.t());
-  arma::vec u;
 
+  // B = B.t();
+
+
+ arma::mat NN = arma::null(B.t());
+ arma::vec u;
  int ncolNN = NN.n_cols;
- while(ncolNN >= 1){
 
-    // std::cout << ncolNN << std::endl;
+ while(ncolNN >= 1){
+  // std::cout << ncolNN << std::endl;
+ // while(i.size() >= J+1){
+
+   // pik(i) = onestepflightphase_arma(B,pik(i));
+   // i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
+   // B = A.rows(i);
+   // B = B.t();
+
+
     // find u in kern of B
      u = NN.col(0);
 
@@ -68,31 +79,20 @@ arma::vec flightphase_arma(arma::mat X,arma::vec pik,double EPS=0.0000001){
       l = -l2;
     }
 
-    unsigned int tmp = arma::max(i);
-    std::cout << tmp << std::endl;
-    std::cout << X.n_rows-1 << std::endl;
     for(unsigned int k = 0; k < i.size(); k++){
       pik[i[k]] = pik[i[k]] + l*u[k];
       if(pik[i[k]] < EPS){
         pik[i[k]] = 0;
-        if(tmp != X.n_rows-1){
-          i[k] = tmp + 1;
-          tmp++;
-        }
       }
       if(pik[i[k]] > (1-EPS)){
         pik[i[k]] = 1;
-        if(tmp != X.n_rows-1){
-          i[k] = tmp + 1;
-          tmp++;
-        }
       }
     }
-    std::cout << i << std::endl;
-
-    // i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
     // std::cout << i << std::endl;
-    // J = min(i.size(),X.n_cols);
+
+    i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
+    // std::cout << i << std::endl;
+    J = std::min(i.size(),X.n_cols);
     arma::mat B = A.rows(i);
     arma::mat NN = arma::null(B.t());
     ncolNN = NN.n_cols;
@@ -107,6 +107,24 @@ arma::vec flightphase_arma(arma::mat X,arma::vec pik,double EPS=0.0000001){
 //
 
 /*** R
+
+
+rm(list = ls())
+N=5000
+n=200
+p=50
+pik=inclusionprobabilities(runif(N),n)
+X=cbind(pik,matrix(rnorm(N*p),c(N,p)))
+
+system.time(test <- flightphase_arma(X,pik))
+system.time(IneqCube::flightphase(pik,X))
+system.time(BalancedSampling::flightphase(pik,X))
+
+x <- t(X[1:6,]/pik[1:6])
+
+onestepflightphase_arma(x,pik[1:6])
+
+
 
 rm(list = ls())
 N=200

@@ -6,6 +6,18 @@
 
 using namespace Rcpp;
 
+// flightphase
+NumericVector flightphase(NumericVector prob, NumericMatrix Xbal);
+RcppExport SEXP _IneqCube_flightphase(SEXP probSEXP, SEXP XbalSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type prob(probSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Xbal(XbalSEXP);
+    rcpp_result_gen = Rcpp::wrap(flightphase(prob, Xbal));
+    return rcpp_result_gen;
+END_RCPP
+}
 // flightphase_arma
 arma::vec flightphase_arma(arma::mat X, arma::vec pik, double EPS);
 RcppExport SEXP _IneqCube_flightphase_arma(SEXP XSEXP, SEXP pikSEXP, SEXP EPSSEXP) {
@@ -19,9 +31,35 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// onestepflightphase_arma
+arma::vec onestepflightphase_arma(arma::mat B, arma::vec pik, double EPS);
+RcppExport SEXP _IneqCube_onestepflightphase_arma(SEXP BSEXP, SEXP pikSEXP, SEXP EPSSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type B(BSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type pik(pikSEXP);
+    Rcpp::traits::input_parameter< double >::type EPS(EPSSEXP);
+    rcpp_result_gen = Rcpp::wrap(onestepflightphase_arma(B, pik, EPS));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rref
+void rref(arma::mat& M);
+RcppExport SEXP _IneqCube_rref(SEXP MSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type M(MSEXP);
+    rref(M);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_IneqCube_flightphase", (DL_FUNC) &_IneqCube_flightphase, 2},
     {"_IneqCube_flightphase_arma", (DL_FUNC) &_IneqCube_flightphase_arma, 3},
+    {"_IneqCube_onestepflightphase_arma", (DL_FUNC) &_IneqCube_onestepflightphase_arma, 3},
+    {"_IneqCube_rref", (DL_FUNC) &_IneqCube_rref, 1},
     {NULL, NULL, 0}
 };
 
