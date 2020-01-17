@@ -1,5 +1,6 @@
 #include <RcppArmadillo.h>
-#include "onestepflightphase_arma.h"
+#include "onestep.h"
+#include "onestepineq.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title title
@@ -30,76 +31,98 @@ arma::vec flightphase_arma(arma::mat X,arma::vec pik,double EPS=0.0000001){
 
   arma::mat D = arma::diagmat(1/pik);
   arma::mat A = D*X;
-  unsigned int J = X.n_cols;
+  unsigned int J = X.n_cols; // initial size of B
 
+  arma::uvec i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first"); // find first index of B
+  arma::mat B = (A.rows(i)).t(); // extract B of A
 
-  // arma::uvec i arma::regspace<arma::uvec>(0,  1,  J); // J+1 first units
-  arma::uvec i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first"); // find index of B
-  // std::cout << i << std::endl;
-
-  arma::mat B = A.rows(i);
-
-  B = B.t();
-
-
- // arma::mat NN = arma::null(B.t());
- // arma::vec u;
- // int ncolNN = NN.n_cols;
-
- // while(ncolNN >= 1){
-  // std::cout << ncolNN << std::endl;
- while(i.size() >= J+1){
-
-   pik(i) = onestepflightphase_arma(B,pik(i));
-   i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
-   B = A.rows(i);
-   B = B.t();
-
-
-  //   // find u in kern of B
-  //    u = NN.col(0);
-  //
-  //   // update pikR
-  //   double l1 = 1e+200;
-  //   double l2 = 1e+200;
-  //   double l = 1e-9;
-  //   for(unsigned int k = 0; k < i.size(); k++){
-  //     if(u[k]> 0){
-  //       l1 = std::min(l1,(1.0-pik[i[k]])/u[k]);
-  //       l2 = std::min(l2,pik[i[k]]/u[k]);
-  //     }
-  //     if(u[k]< 0){
-  //       l1 = std::min(l1,-pik[i[k]]/u[k]);
-  //       l2 = std::min(l2,(pik[i[k]]-1.0)/u[k]);
-  //     }
-  //   }
-  //   if(Rcpp::runif(1)[0]<l2/(l1+l2)){
-  //     l = l1;
-  //   }else{
-  //     l = -l2;
-  //   }
-  //
-  //   for(unsigned int k = 0; k < i.size(); k++){
-  //     pik[i[k]] = pik[i[k]] + l*u[k];
-  //     if(pik[i[k]] < EPS){
-  //       pik[i[k]] = 0;
-  //     }
-  //     if(pik[i[k]] > (1-EPS)){
-  //       pik[i[k]] = 1;
-  //     }
-  //   }
-  //   // std::cout << i << std::endl;
-  //
-  //   i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
-  //   // std::cout << i << std::endl;
-  //   J = std::min(i.size(),X.n_cols);
-  //   arma::mat B = A.rows(i);
-  //   arma::mat NN = arma::null(B.t());
-  //   ncolNN = NN.n_cols;
+  while(i.size() > 0){
+    // std::cout << i.size() << std::endl;
+    pik.elem(i) =  onestep(B,pik.elem(i));
+    i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
+    B = (A.rows(i)).t();
+    // std::cout << B << std::endl;
+    if(i.size() < (J+1)){
+      arma::mat kern = arma::null(B);
+      if(kern.empty()){
+        break;
+      }
+    }
   }
   return(pik);
 }
 
+// [[Rcpp::depends(RcppArmadillo)]]
+//' @title title
+//'
+//' @description
+//' description
+//'
+//'
+//' @param x x
+//'
+//' @details
+//'
+//' details
+//'
+//' @return a vector
+//'
+//'
+//' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
+//'
+//' @seealso
+//' func
+//'
+//' @examples
+//'
+//' @export
+// [[Rcpp::export]]
+arma::vec ineq(arma::mat X,
+               arma::vec pik,
+               arma::mat B,
+               arma::vec r,
+               double EPS=0.0000001){
+
+  arma::mat D = arma::diagmat(1/pik);
+  arma::mat A = D*X;
+  unsigned int J = X.n_cols; // initial size of B
+
+  arma::uvec i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first"); // find first index of B
+  arma::mat Ar = (A.rows(i)).t(); // extract B of A
+  arma::mat Br = (B.rows(i)).t();
+
+  arma::vec c = B.t()*pik; // initialize c
+  arma::vec num = r-c; // initizalize r-c
+
+  while(i.size() > 0){
+
+    pik(i) = onestepineq(Ar,pik(i),Br,num);
+
+    arma::vec cond = arma::abs(B.t()*pik-r);
+    r = r(find(cond >= EPS));
+    c = c(find(cond >= EPS));
+    num = r-c;
+    for(arma::uword k = 0; k < cond.size(); k++){
+      if( cond[k] <= EPS){
+        A = join_rows( A, B.col(k));
+        B.shed_col(k);
+        J = A.n_cols;
+      }
+    }
+
+    i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
+    Ar = (A.rows(i)).t();
+    Br = (B.rows(i)).t();
+
+    if(i.size() < (J+1)){
+      arma::mat kern = arma::null(Ar);
+      if(kern.empty()){
+        break;
+      }
+    }
+  }
+  return(pik);
+}
 
 // You can include R code blocks in C++ files processed with sourceCpp
 // (useful for testing and development). The R code will be automatically
@@ -108,17 +131,64 @@ arma::vec flightphase_arma(arma::mat X,arma::vec pik,double EPS=0.0000001){
 
 /*** R
 
+rm(list = ls())
+EPS=0.0000001
+N=500
+n=50
+p=4
+q=7
+z=runif(N)
+#z=rep(1,N)
+pik=sampling::inclusionprobabilities(z,n)
+X=cbind(pik,matrix(rnorm(N*p),c(N,p)))
+A=X/pik
+Z=cbind(matrix(rbinom(N*q,1,1/2),c(N,q)))
+B=cbind(Z,-Z)
+r=c(ceiling(pik%*%B))
+r[abs(pik%*%B-round(pik%*%B))<EPS]=round(pik%*%B)[abs(pik%*%B-round(pik%*%B))<EPS]
+system.time(s <- ineq(X,pik,B,r,EPS=0.000001))
+system.time(s <- fast.flight.cube.ineq(X,pik,B,r,deepness=1,EPS=0.000001))
+
+
+
+t(B)%*%s <= r
+t(A)%*%s
+t(A)%*%pik
+
+
+
+
+
+s <- flightphase_arma2(X,pik)
+t(A)%*%s
+t(A)%*%pik
+
+
+
+round(s,3)
+c(t(B)%*%pik)
+c(r)
+round(c(t(B)%*%pik)-c(t(B)%*%s),3)
+c(t(B)%*%pikstar)-c(t(B)%*%s)
+colSums(X)
+c(t(X)%*%(s/pik))
+
+
+abs(c(t(B)%*%pik)-r)<=EPS
 
 rm(list = ls())
 N=5000
 n=200
-p=50
+p=20
 pik=inclusionprobabilities(runif(N),n)
 X=cbind(pik,matrix(rnorm(N*p),c(N,p)))
 
-system.time(test <- flightphase_arma(X,pik))
+system.time(test <- flightphase_arma2(X,pik))
 system.time(IneqCube::flightphase(pik,X))
 system.time(BalancedSampling::flightphase(pik,X))
+
+(X/pik)%%
+
 
 x <- t(X[1:6,]/pik[1:6])
 

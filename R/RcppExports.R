@@ -132,8 +132,8 @@ flightphase_arma <- function(X, pik, EPS = 0.0000001) {
 #' @examples
 #'
 #' @export
-onestepflightphase_arma <- function(B, pik, EPS = 0.0000001) {
-    .Call(`_IneqCube_onestepflightphase_arma`, B, pik, EPS)
+ineq <- function(X, pik, B, r, EPS = 0.0000001) {
+    .Call(`_IneqCube_ineq`, X, pik, B, r, EPS)
 }
 
 #' @title title
@@ -159,7 +159,61 @@ onestepflightphase_arma <- function(B, pik, EPS = 0.0000001) {
 #' @examples
 #'
 #' @export
-rref <- function(M) {
-    invisible(.Call(`_IneqCube_rref`, M))
+flightphase_arma2 <- function(X, pik, EPS = 0.0000001) {
+    .Call(`_IneqCube_flightphase_arma2`, X, pik, EPS)
+}
+
+#' @title title
+#'
+#' @description
+#' description
+#'
+#'
+#' @param x x
+#'
+#' @details
+#'
+#' details
+#'
+#' @return a vector
+#'
+#'
+#' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
+#'
+#' @seealso
+#' func
+#'
+#' @examples
+#'
+#' @export
+onestep <- function(B, pik, EPS = 0.0000001) {
+    .Call(`_IneqCube_onestep`, B, pik, EPS)
+}
+
+#' @title title
+#'
+#' @description
+#' description
+#'
+#'
+#' @param x x
+#'
+#' @details
+#'
+#' details
+#'
+#' @return a vector
+#'
+#'
+#' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
+#'
+#' @seealso
+#' func
+#'
+#' @examples
+#'
+#' @export
+onestepineq <- function(Ar, pik, Br, num, EPS = 0.0000001) {
+    .Call(`_IneqCube_onestepineq`, Ar, pik, Br, num, EPS)
 }
 

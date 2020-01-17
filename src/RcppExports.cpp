@@ -53,27 +53,60 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// onestepflightphase_arma
-arma::vec onestepflightphase_arma(arma::mat B, arma::vec pik, double EPS);
-RcppExport SEXP _IneqCube_onestepflightphase_arma(SEXP BSEXP, SEXP pikSEXP, SEXP EPSSEXP) {
+// ineq
+arma::vec ineq(arma::mat X, arma::vec pik, arma::mat B, arma::vec r, double EPS);
+RcppExport SEXP _IneqCube_ineq(SEXP XSEXP, SEXP pikSEXP, SEXP BSEXP, SEXP rSEXP, SEXP EPSSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type pik(pikSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type B(BSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type r(rSEXP);
+    Rcpp::traits::input_parameter< double >::type EPS(EPSSEXP);
+    rcpp_result_gen = Rcpp::wrap(ineq(X, pik, B, r, EPS));
+    return rcpp_result_gen;
+END_RCPP
+}
+// flightphase_arma2
+arma::vec flightphase_arma2(arma::mat X, arma::vec pik, double EPS);
+RcppExport SEXP _IneqCube_flightphase_arma2(SEXP XSEXP, SEXP pikSEXP, SEXP EPSSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type pik(pikSEXP);
+    Rcpp::traits::input_parameter< double >::type EPS(EPSSEXP);
+    rcpp_result_gen = Rcpp::wrap(flightphase_arma2(X, pik, EPS));
+    return rcpp_result_gen;
+END_RCPP
+}
+// onestep
+arma::vec onestep(arma::mat B, arma::vec pik, double EPS);
+RcppExport SEXP _IneqCube_onestep(SEXP BSEXP, SEXP pikSEXP, SEXP EPSSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type B(BSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type pik(pikSEXP);
     Rcpp::traits::input_parameter< double >::type EPS(EPSSEXP);
-    rcpp_result_gen = Rcpp::wrap(onestepflightphase_arma(B, pik, EPS));
+    rcpp_result_gen = Rcpp::wrap(onestep(B, pik, EPS));
     return rcpp_result_gen;
 END_RCPP
 }
-// rref
-void rref(arma::mat& M);
-RcppExport SEXP _IneqCube_rref(SEXP MSEXP) {
+// onestepineq
+arma::vec onestepineq(arma::mat Ar, arma::vec pik, arma::mat Br, arma::vec num, double EPS);
+RcppExport SEXP _IneqCube_onestepineq(SEXP ArSEXP, SEXP pikSEXP, SEXP BrSEXP, SEXP numSEXP, SEXP EPSSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type M(MSEXP);
-    rref(M);
-    return R_NilValue;
+    Rcpp::traits::input_parameter< arma::mat >::type Ar(ArSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type pik(pikSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Br(BrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type num(numSEXP);
+    Rcpp::traits::input_parameter< double >::type EPS(EPSSEXP);
+    rcpp_result_gen = Rcpp::wrap(onestepineq(Ar, pik, Br, num, EPS));
+    return rcpp_result_gen;
 END_RCPP
 }
 
@@ -82,8 +115,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_IneqCube_onestepfastflightcube", (DL_FUNC) &_IneqCube_onestepfastflightcube, 2},
     {"_IneqCube_flightphase", (DL_FUNC) &_IneqCube_flightphase, 2},
     {"_IneqCube_flightphase_arma", (DL_FUNC) &_IneqCube_flightphase_arma, 3},
-    {"_IneqCube_onestepflightphase_arma", (DL_FUNC) &_IneqCube_onestepflightphase_arma, 3},
-    {"_IneqCube_rref", (DL_FUNC) &_IneqCube_rref, 1},
+    {"_IneqCube_ineq", (DL_FUNC) &_IneqCube_ineq, 5},
+    {"_IneqCube_flightphase_arma2", (DL_FUNC) &_IneqCube_flightphase_arma2, 3},
+    {"_IneqCube_onestep", (DL_FUNC) &_IneqCube_onestep, 3},
+    {"_IneqCube_onestepineq", (DL_FUNC) &_IneqCube_onestepineq, 5},
     {NULL, NULL, 0}
 };
 

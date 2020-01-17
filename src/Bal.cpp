@@ -219,13 +219,14 @@ NumericVector flightphase(NumericVector prob, NumericMatrix Xbal){
   double eps = 1e-12;
   int done = 0, tempInt, howlong;
   // randomize order of index list
-  NumericVector rnd = runif(N);
-  for(i=0;i<N;i++){
-    k = i + floor(rnd[i] * (N-i));
-    tempInt = index[i];
-    index[i] = index[k];
-    index[k] = tempInt;
-  }
+  // NumericVector rnd = runif(N);
+  // for(i=0;i<N;i++){
+  //   k = i + floor(rnd[i] * (N-i));
+  //   tempInt = index[i];
+  //   index[i] = index[k];
+  //   index[k] = tempInt;
+  // }
+
   // put finished units at beginning of list
   for(i=done;i<N;i++){
     if( p[index[i]]<eps || p[index[i]]>1-eps ){
@@ -235,6 +236,7 @@ NumericVector flightphase(NumericVector prob, NumericMatrix Xbal){
       done = done + 1;
     }
   }
+
   // remaining are index from done to N-1
   while( done < N ){
     // find cluster of size howmany
@@ -254,6 +256,7 @@ NumericVector flightphase(NumericVector prob, NumericMatrix Xbal){
         }
         p_small[i] = p[index_small[i]];
       }
+      // std::cout << index << std::endl;
       // std::cout << B << std::endl;
       p_small = onestepfastflightcube(p_small,B);
       // update prob
@@ -285,5 +288,21 @@ NumericVector flightphase(NumericVector prob, NumericMatrix Xbal){
       p[index[i]] = 0;
     }
   }
+
   return p;
 }
+
+/*** R
+
+rm(list = ls())
+N = 50
+n = 30
+p = 2
+pik=inclusionprobabilities(runif(N),n)
+X=cbind(pik,matrix(rnorm(N*p),c(N,p)))
+
+flightphase(pik,X)
+
+
+
+*/
