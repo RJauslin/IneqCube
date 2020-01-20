@@ -124,12 +124,44 @@ arma::vec ineq(arma::mat X,
   return(pik);
 }
 
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically
-// run after the compilation.
-//
 
 /*** R
+
+rm(list = ls())
+library(sampling)
+library(MASS)
+EPS=0.0000001
+N=1000
+n=300
+p=2
+q=7
+z=runif(N)
+#z=rep(1,N)
+pik=inclusionprobabilities(z,n)
+X=cbind(pik,matrix(rnorm(N*p),c(N,p)))
+A=X/pik
+Z=cbind(matrix(rbinom(N*q,1,1/2),c(N,q)))
+B=cbind(Z,-Z)
+r=c(ceiling(pik%*%B))
+r[abs(pik%*%B-round(pik%*%B))<EPS]=round(pik%*%B)[abs(pik%*%B-round(pik%*%B))<EPS]
+s=ineq(X,pik,B,r,EPS=0.000001)
+round(s,3)
+# c(t(B)%*%pik)
+# c(r)
+# c(t(B)%*%s)
+# colSums(X)
+# c(t(X)%*%(s/pik))
+
+piks=as.vector(flightphase_arma2(as.matrix(cbind(X,B*pik)),pik))
+pikstar=ineq(as.matrix(X/pik*piks),piks,B,r,EPS=0.000001)
+sum(pikstar>EPS & pikstar<1-EPS )
+
+piks=flightphase_arma2(as.matrix(cbind(pik,B*pik)),pik,EPS=0.000001)
+pikstar=ineq(piks,piks,B,r,EPS=0.000001)
+sum(pikstar>EPS & pikstar<1-EPS )
+
+s=landingcube(cbind(pik,B*pik),pikstar,pik,comment=TRUE)
+
 
 rm(list = ls())
 EPS=0.0000001
