@@ -103,10 +103,12 @@ fast.flight.cube.ineq<-function(X,pik,B,r,deepness=1,EPS=0.000001){
     if(TT ){
       c=c(t(B)%*%pik)
       # cR=c(t(BR)%*%pikR)
+      print(r-c);
       pet=(r-c)/c(t(BR)%*%u)
-      # print(pet);
+
       # cat("\n");
       if(sum(pet>0)>0) nu1=min(pet[pet>0])  else nu1=100000000000
+      # print(nu1)
       if(sum(pet<0)>0) nu2=min(-pet[pet<0]) else nu2=100000000000
       l1=min(l1,nu1)
       l2=min(l2,nu2)

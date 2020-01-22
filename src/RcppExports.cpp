@@ -40,15 +40,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// chooseArma
-long long int chooseArma(int n, int k);
-RcppExport SEXP _IneqCube_chooseArma(SEXP nSEXP, SEXP kSEXP) {
+// chooseRec
+long long int chooseRec(int n, int k);
+RcppExport SEXP _IneqCube_chooseRec(SEXP nSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    rcpp_result_gen = Rcpp::wrap(chooseArma(n, k));
+    rcpp_result_gen = Rcpp::wrap(chooseRec(n, k));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -64,15 +64,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// comb
-arma::mat comb(int N, int K);
-RcppExport SEXP _IneqCube_comb(SEXP NSEXP, SEXP KSEXP) {
+// flightphase_arma2
+arma::vec flightphase_arma2(arma::mat X, arma::vec pik, double EPS);
+RcppExport SEXP _IneqCube_flightphase_arma2(SEXP XSEXP, SEXP pikSEXP, SEXP EPSSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< int >::type K(KSEXP);
-    rcpp_result_gen = Rcpp::wrap(comb(N, K));
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type pik(pikSEXP);
+    Rcpp::traits::input_parameter< double >::type EPS(EPSSEXP);
+    rcpp_result_gen = Rcpp::wrap(flightphase_arma2(X, pik, EPS));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -104,19 +105,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// flightphase_arma2
-arma::vec flightphase_arma2(arma::mat X, arma::vec pik, double EPS);
-RcppExport SEXP _IneqCube_flightphase_arma2(SEXP XSEXP, SEXP pikSEXP, SEXP EPSSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type pik(pikSEXP);
-    Rcpp::traits::input_parameter< double >::type EPS(EPSSEXP);
-    rcpp_result_gen = Rcpp::wrap(flightphase_arma2(X, pik, EPS));
-    return rcpp_result_gen;
-END_RCPP
-}
 // onestep
 arma::vec onestep(arma::mat B, arma::vec pik, double EPS);
 RcppExport SEXP _IneqCube_onestep(SEXP BSEXP, SEXP pikSEXP, SEXP EPSSEXP) {
@@ -145,19 +133,31 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// samplen
+arma::mat samplen(int N, int n);
+RcppExport SEXP _IneqCube_samplen(SEXP NSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(samplen(N, n));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_IneqCube_rrefBal", (DL_FUNC) &_IneqCube_rrefBal, 1},
     {"_IneqCube_onestepfastflightcube", (DL_FUNC) &_IneqCube_onestepfastflightcube, 2},
     {"_IneqCube_flightphase", (DL_FUNC) &_IneqCube_flightphase, 2},
-    {"_IneqCube_chooseArma", (DL_FUNC) &_IneqCube_chooseArma, 2},
+    {"_IneqCube_chooseRec", (DL_FUNC) &_IneqCube_chooseRec, 2},
     {"_IneqCube_choose", (DL_FUNC) &_IneqCube_choose, 2},
-    {"_IneqCube_comb", (DL_FUNC) &_IneqCube_comb, 2},
+    {"_IneqCube_flightphase_arma2", (DL_FUNC) &_IneqCube_flightphase_arma2, 3},
     {"_IneqCube_flightphase_arma", (DL_FUNC) &_IneqCube_flightphase_arma, 3},
     {"_IneqCube_ineq", (DL_FUNC) &_IneqCube_ineq, 5},
-    {"_IneqCube_flightphase_arma2", (DL_FUNC) &_IneqCube_flightphase_arma2, 3},
     {"_IneqCube_onestep", (DL_FUNC) &_IneqCube_onestep, 3},
     {"_IneqCube_onestepineq", (DL_FUNC) &_IneqCube_onestepineq, 5},
+    {"_IneqCube_samplen", (DL_FUNC) &_IneqCube_samplen, 2},
     {NULL, NULL, 0}
 };
 

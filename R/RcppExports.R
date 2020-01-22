@@ -105,8 +105,8 @@ flightphase <- function(prob, Xbal) {
 #' @examples
 #'
 #' @export
-chooseArma <- function(n, k) {
-    .Call(`_IneqCube_chooseArma`, n, k)
+chooseRec <- function(n, k) {
+    .Call(`_IneqCube_chooseRec`, n, k)
 }
 
 #' @title title
@@ -139,7 +139,7 @@ choose <- function(n, k) {
 #' @title title
 #'
 #' @description
-#' description Rosetta code combn
+#' description
 #'
 #'
 #' @param x x
@@ -159,8 +159,8 @@ choose <- function(n, k) {
 #' @examples
 #'
 #' @export
-comb <- function(N, K) {
-    .Call(`_IneqCube_comb`, N, K)
+flightphase_arma2 <- function(X, pik, EPS = 0.0000001) {
+    .Call(`_IneqCube_flightphase_arma2`, X, pik, EPS)
 }
 
 #' @title title
@@ -240,33 +240,6 @@ ineq <- function(X, pik, B, r, EPS = 0.0000001) {
 #' @examples
 #'
 #' @export
-flightphase_arma2 <- function(X, pik, EPS = 0.0000001) {
-    .Call(`_IneqCube_flightphase_arma2`, X, pik, EPS)
-}
-
-#' @title title
-#'
-#' @description
-#' description
-#'
-#'
-#' @param x x
-#'
-#' @details
-#'
-#' details
-#'
-#' @return a vector
-#'
-#'
-#' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
-#'
-#' @seealso
-#' func
-#'
-#' @examples
-#'
-#' @export
 onestep <- function(B, pik, EPS = 0.0000001) {
     .Call(`_IneqCube_onestep`, B, pik, EPS)
 }
@@ -296,5 +269,32 @@ onestep <- function(B, pik, EPS = 0.0000001) {
 #' @export
 onestepineq <- function(Ar, pik, Br, num, EPS = 0.0000001) {
     .Call(`_IneqCube_onestepineq`, Ar, pik, Br, num, EPS)
+}
+
+#' @title title
+#'
+#' @description
+#' description Rosetta code combn
+#'
+#'
+#' @param x x
+#'
+#' @details
+#'
+#' details
+#'
+#' @return a vector
+#'
+#'
+#' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
+#'
+#' @seealso
+#' func
+#'
+#' @examples
+#'
+#' @export
+samplen <- function(N, n) {
+    .Call(`_IneqCube_samplen`, N, n)
 }
 

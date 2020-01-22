@@ -141,6 +141,57 @@ arma::vec flightphase_arma2(arma::mat X,arma::vec pik,double EPS=0.0000001){
 }
 
 
+// [[Rcpp::depends(RcppArmadillo)]]
+//' @title title
+//'
+//' @description
+//' description
+//'
+//'
+//' @param x x
+//'
+//' @details
+//'
+//' details
+//'
+//' @return a vector
+//'
+//'
+//' @author Raphaël Jauslin \email{raphael.jauslin@@unine.ch}
+//'
+//' @seealso
+//' func
+//'
+//' @examples
+//'
+//' @export
+// [[Rcpp::export]]
+arma::vec flightphase_arma(arma::mat X,arma::vec pik,double EPS=0.0000001){
+
+  arma::mat D = arma::diagmat(1/pik);
+  arma::mat A = D*X;
+  unsigned int J = X.n_cols; // initial size of B
+
+  arma::uvec i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first"); // find first index of B
+  arma::mat B = (A.rows(i)).t(); // extract B of A
+
+  while(i.size() > 0){
+    // std::cout << i.size() << std::endl;
+    pik.elem(i) =  onestep(B,pik.elem(i));
+    i = arma::find(pik > EPS && pik < (1-EPS), J+1, "first");
+    B = (A.rows(i)).t();
+    // std::cout << B << std::endl;
+    if(i.size() < (J+1)){
+      arma::mat kern = arma::null(B);
+      if(kern.empty()){
+        break;
+      }
+    }
+  }
+  return(pik);
+}
+
+
 
 /*** R
 

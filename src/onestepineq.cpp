@@ -36,12 +36,18 @@ arma::vec onestepineq(arma::mat Ar,
   arma::vec u(N);
   u = kern.col(0);
 
+  arma::vec den = Br*u;
+  arma::vec pet = num/den;
+
 
   double l1 = 1e+200;
   double l2 = 1e+200;
   double mu1 = 1e+200;
   double mu2 = 1e+200;
   double l = 1e-9;
+  double nu1 = 1e+200;
+  double nu2 = 1e+200;
+
   for(arma::uword k = 0; k < N; k++){
     if(u[k]> 0){
       mu1 = std::min(mu1,(1.0 - pik[k])/u[k]);
@@ -53,22 +59,28 @@ arma::vec onestepineq(arma::mat Ar,
     }
   }
 
-  arma::vec pet = num;
-  arma::vec tmp = Br*u;
-  // std::cout << tmp << std::endl;
-  // std::cout << pet << std::endl;
-  pet = pet/tmp;
-  // std::cout << pet << std::endl;
-  double nu1 = 1e+200;
-  double nu2 = 1e+200;
-  for(arma::uword k = 0; k < pet.size(); k++){
-    if(pet[k]> 0){
-      nu1 = std::min(nu1,pet[k]);
-    }
-    if(pet[k]< 0){
-      nu2 = std::min(nu2,-pet[k]);
-    }
+  if(arma::sum(pet>0) > 0){
+    nu1=arma::min(pet(arma::find(pet>0)));
   }
+  if(arma::sum(pet<0) > 0){
+    nu2=arma::min(-pet(arma::find(pet<0)));
+  }
+
+  // std::cout << nu1 << std::endl;
+  // for(arma::uword k = 0; k < pet.size(); k++){
+  //   // if(tmp[k] < 0){
+  //   //   nu1 = std::min(nu1, - (v[k] - tmp2[k])/tmp[k]);
+  //   // }
+  //   // if(tmp[k] > 0){
+  //   //   nu2 = std::min(nu2, (v[k] - tmp2[k])/tmp[k]);
+  //   // }
+  //   if(pet[k]> 0){
+  //     nu1 = std::min(nu1,pet[k]);
+  //   }
+  //   if(pet[k]< 0){
+  //     nu2 = std::min(nu2,-pet[k]);
+  //   }
+  // }
 
   l1 = std::min(mu1,nu1);
   l2 = std::min(mu2,nu2);
