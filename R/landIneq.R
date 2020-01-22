@@ -87,6 +87,10 @@ landIneq <- function(X, pikstar, pik,B,r,comment = TRUE){
 
   pikland = pikstar[index]
   Nland = length(pikland)
+  if(comment){
+    cat("Number of non-equal 0 or 1 units ", Nland, "\n")
+  }
+
   Xland = array(X[index, ], c(Nland, p))
   Bland = array(B[index, ], c(Nland, q))
   rland = r - t(B[index01,])%*%pikstar[index01]
@@ -137,6 +141,7 @@ landIneq <- function(X, pikstar, pik,B,r,comment = TRUE){
                FUN = function(x,H){return(t(x)%*%H%*%x)},
                H =  MASS::ginv(t(A) %*% A))
 
+  # cost =
 
   # find solution to the system ->  add column of 1 to the fixed sampe size ?
   # find minimum x such that t(V)%"%x <= b
@@ -146,7 +151,19 @@ landIneq <- function(X, pikstar, pik,B,r,comment = TRUE){
   # constdir = rep("==", times = (Nland + 1))
   V = sampleSet
   b = pikland
+  # solve(V,b)
+
+  # Vsvd <- svd(V)
+  # Vdiag <- diag(1/Vsvd$d)
+  # x <- Vsvd$v %*% Vdiag %*% t(Vsvd$u) %*% b
+  # V%*%x
+  # b
+
+  #
+  # V = t(rbind(sampleSet, rep(1, times = sampleSetSize)))
+  # b = c(pikland, 1)
   constdir = rep("==", times = (Nland))
+  # x = lpSolve::lp("min", rep(1,length(cost)), V, constdir, b)
   x = lpSolve::lp("min", cost, V, constdir, b)
   if(x$status == 2){
     stop("Error: no feasible solution reached.")

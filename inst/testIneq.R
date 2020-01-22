@@ -4,7 +4,7 @@ comment = TRUE
 EPS=0.0000001
 N=1000
 n=300
-p=3
+p=2
 q=7
 z=runif(N)
 #z=rep(1,N)
@@ -15,11 +15,17 @@ Z=cbind(matrix(rbinom(N*q,1,1/2),c(N,q)))
 B=cbind(Z,-Z)
 r=c(ceiling(pik%*%B))
 r[abs(pik%*%B-round(pik%*%B))<EPS]=round(pik%*%B)[abs(pik%*%B-round(pik%*%B))<EPS]
-pikstar <- as.vector(ineq(X,pik,B,r,EPS=0.000001))
-
-s <- landIneq(X,pikstar,pik,B,r)
-
-
+# pikstar <- as.vector(ineq(X,pik,B,r,EPS=0.000001))
+# t(B)%*%pikstar
+# r
+#
+#
+# s <- landIneq(X,pikstar,pik,B,r)
+# s <- sampling::landingcube(X,pikstar,pik)
+# t(B)%*%s -r
+#
+# t(X/pik)%*%s
+# t(X/pik)%*%pik
 #
 # test <- which(t(B)%*%s > r)
 # r[test]
@@ -36,7 +42,7 @@ piks <- as.vector(flightphase_arma(cbind(X,B*pik),pik))
 p+q+1 # + 1 pour la colonne 1
 length(which(piks > EPS & piks <(1-EPS)))
 # CHECK QUE TOUT SOIT SATISFAIT
-t(B)%*%piks <= r
+round(t(B)%*%piks - r,2)
 t(X/pik)%*%piks
 t(X/pik)%*%pik
 
@@ -48,9 +54,7 @@ pikstar <- ineq(X/pik*piks,piks,B,r)
 p+1 # + 1 pour la colonne 1
 length(which(pikstar > EPS & pikstar <(1-EPS)))
 # check -> CERTAINE INEGALITE NE SONT PLUS SATISFAITE
-test <- which(t(B)%*%pikstar > r)
-r[test]
-as.vector(t(B)%*%pikstar)[test]
+round(t(B)%*%pikstar - r,3)
 t(X/pik)%*%pikstar
 t(X/pik)%*%pik
 
@@ -58,9 +62,7 @@ t(X/pik)%*%pik
 # LAND DES p+1 UNITE SUR LES ECHANTILLONS QUI SATISFONT LES CONTRAINTES RESTANTES.
 s <- landIneq(X,pikstar,pik,B,r)
 
-test <- which(t(B)%*%s > r)
-r[test]
-as.vector(t(B)%*%s)[test]
+round(t(B)%*%s - r,3)
 t(X/pik)%*%s
 t(X/pik)%*%pik
 
